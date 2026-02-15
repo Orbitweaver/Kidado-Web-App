@@ -8,9 +8,35 @@ import { StepRoleDetails } from "./steps/step-role-details";
 import { StepInterests } from "./steps/step-interests";
 import { StepProfileUpload } from "./steps/step-profile-upload";
 import { StepSuccess } from "./steps/step-success";
+import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useRef } from "react";
+
+const variants = {
+    enter: (direction: number) => ({
+        x: direction > 0 ? 50 : -50,
+        opacity: 0,
+    }),
+    center: {
+        zIndex: 1,
+        x: 0,
+        opacity: 1,
+    },
+    exit: (direction: number) => ({
+        zIndex: 0,
+        x: direction < 0 ? 50 : -50,
+        opacity: 0,
+    }),
+};
 
 export function OnboardingLayout() {
     const { currentStep, prevStep, nextStep } = useOnboardingStore();
+
+    const prevStepRef = useRef(currentStep);
+    const direction = currentStep > prevStepRef.current ? 1 : -1;
+
+    useEffect(() => {
+        prevStepRef.current = currentStep;
+    }, [currentStep]);
 
     const renderStep = () => {
         switch (currentStep) {
@@ -55,7 +81,23 @@ export function OnboardingLayout() {
             </div>
 
             <div className="flex-1 flex flex-col justify-center">
-                {renderStep()}
+                <AnimatePresence mode="wait" custom={direction}>
+                    <motion.div
+                        key={currentStep}
+                        custom={direction}
+                        variants={variants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                            x: { type: "spring", stiffness: 300, damping: 30 },
+                            opacity: { duration: 0.2 },
+                        }}
+                        className="w-full h-full"
+                    >
+                        {renderStep()}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );
