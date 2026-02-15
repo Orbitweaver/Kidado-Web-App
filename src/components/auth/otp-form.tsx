@@ -6,13 +6,35 @@ import {
   InputOTPGroup,
 } from "@/components/ui/input-otp";
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { FieldError } from "../ui/field";
+
+const otpSchema = z.object({
+  otp: z.string().min(6, {
+    message: "Your one-time password must be 6 characters.",
+  }),
+});
+
+type OTPValues = z.infer<typeof otpSchema>;
 
 const OTPForm = ({
   className,
   ...props
 }: React.ComponentProps<"form">) => {
   const [timer, setTimer] = useState(20);
-  const [error, setError] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<OTPValues>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: {
+      otp: "",
+    },
+  });
 
   useEffect(() => {
     if (timer > 0) {
@@ -31,16 +53,14 @@ const OTPForm = ({
       .padStart(2, "0")}`;
   };
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(false);
-    console.log("Submitted");
+  function onSubmit(data: OTPValues) {
+    console.log("OTP Submitted:", data);
   }
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -51,36 +71,42 @@ const OTPForm = ({
         </p>
       </div>
 
-      <div className="flex justify-center">
-        <InputOTP maxLength={6}>
-          <div className="flex gap-4">
-            {[0, 1, 2, 3, 4, 5].map((index) => (
-              <InputOTPGroup key={index}>
-                <InputOTPSlot
-                  index={index}
-                  className={cn(
-                    "h-12 w-12 rounded-md border text-lg shadow-sm transition-all border-color-primary",
-                    error && "bg-red-50 border-red-200"
-                  )}
-                />
-              </InputOTPGroup>
-            ))}
-          </div>
-        </InputOTP>
+      <div className="flex flex-col items-center justify-center gap-2">
+        <Controller
+          control={control}
+          name="otp"
+          render={({ field }) => (
+            <InputOTP maxLength={6} {...field}>
+              <div className="flex gap-4">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <InputOTPGroup key={index}>
+                    <InputOTPSlot
+                      index={index}
+                      className={cn(
+                        "h-12 w-12 rounded-md border text-lg shadow-sm transition-all border-color-primary",
+                        !!errors.otp && "bg-red-50 border-red-200"
+                      )}
+                    />
+                  </InputOTPGroup>
+                ))}
+              </div>
+            </InputOTP>
+          )}
+        />
+        <FieldError errors={[errors.otp]} className="text-center" />
       </div>
 
-      {error && (
-        <p className="text-center text-sm text-red-500">
-          wrong code, please try again
-        </p>
-      )}
-
       <div className="text-center text-sm">
-        <span className="text-muted-foreground font-semibold">Send code again</span>{" "}
+        <span className="text-muted-foreground font-semibold">
+          Send code again
+        </span>{" "}
         <span className="text-muted-foreground ml-1">{formatTime(timer)}</span>
       </div>
 
-      <Button type="submit" className="w-full cursor-pointer text-white h-11 rounded-md">
+      <Button
+        type="submit"
+        className="w-full cursor-pointer text-white h-11 rounded-md"
+      >
         Verify Code
       </Button>
     </form>

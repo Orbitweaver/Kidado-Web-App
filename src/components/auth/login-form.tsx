@@ -5,24 +5,58 @@ import {
   FieldGroup,
   FieldLabel,
   FieldSeparator,
+  FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
+type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = (data: LoginValues) => {
+    console.log("Login data:", data);
+    // TODO: integrate with auth store/api
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={handleSubmit(onSubmit)}
+      {...props}
+    >
       <FieldGroup>
-        <Field className="gap-1">
+        <Field className="gap-1" >
           <FieldLabel htmlFor="email" className="font-medium">
             Email id
           </FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            placeholder="Enter email"
+            {...register("email")}
+          />
+          <FieldError errors={[errors.email]} />
         </Field>
-        <Field className="gap-1">
+        <Field className="gap-1" >
           <div className="flex items-center">
             <FieldLabel htmlFor="password" className="font-medium">
               Password
@@ -34,7 +68,8 @@ export function LoginForm({
               Forgot password?
             </Link>
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" placeholder="Enter password" {...register("password")} />
+          <FieldError errors={[errors.password]} />
         </Field>
         <Field>
           <Button type="submit" className="cursor-pointer">
@@ -50,6 +85,7 @@ export function LoginForm({
               height="800px"
               viewBox="0 0 16 16"
               fill="none"
+              className="mr-2 h-4 w-4"
             >
               <path
                 fill="#4285F4"
