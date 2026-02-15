@@ -10,6 +10,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FieldError } from "../ui/field";
+import { useNavigate } from "react-router";
 
 const otpSchema = z.object({
   otp: z.string().min(6, {
@@ -24,6 +25,7 @@ const OTPForm = ({
   ...props
 }: React.ComponentProps<"form">) => {
   const [timer, setTimer] = useState(20);
+  const navigate = useNavigate();
 
   const {
     control,
@@ -31,6 +33,7 @@ const OTPForm = ({
     formState: { errors },
   } = useForm<OTPValues>({
     resolver: zodResolver(otpSchema),
+    mode: "onSubmit",
     defaultValues: {
       otp: "",
     },
@@ -55,6 +58,7 @@ const OTPForm = ({
 
   function onSubmit(data: OTPValues) {
     console.log("OTP Submitted:", data);
+    navigate("/onboarding");
   }
 
   return (

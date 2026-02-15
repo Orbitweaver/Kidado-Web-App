@@ -13,6 +13,8 @@ const App = () => {
       <Route path="/otp" element={<OTPPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
 
+      <Route path="/" element={<h1 className="text-3xl text-center mt-24">Home page</h1>} />
+
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

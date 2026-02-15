@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Check } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const registerSchema = z
   .object({
@@ -51,6 +52,7 @@ const RegisterForm = ({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
   });
+  const navigate = useNavigate();
 
   const email = watch("email");
   const password = watch("password") || "";
@@ -64,6 +66,7 @@ const RegisterForm = ({
 
   const onSubmit = (data: RegisterValues) => {
     console.log("Register data:", data);
+    navigate("/otp");
     // TODO: integrate with auth store/api
   };
 

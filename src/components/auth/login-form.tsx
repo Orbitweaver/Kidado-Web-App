@@ -8,7 +8,7 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,11 +30,14 @@ export function LoginForm({
     formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
   });
+  const navigate = useNavigate();
 
   const onSubmit = (data: LoginValues) => {
     console.log("Login data:", data);
     // TODO: integrate with auth store/api
+    navigate("/");
   };
 
   return (
