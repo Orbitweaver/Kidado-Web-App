@@ -33,14 +33,25 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex flex-1 items-center justify-center">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-1 items-center justify-center p-0 md:p-10">
           <div className="w-full max-w-sm">
             <div className="flex items-center justify-center mb-12">
               <Logo />
             </div>
             {children}
           </div>
+        </div>
+        <div className="text-center text-xs text-muted-foreground">
+          By signing up to create an account I accept Company's <br />
+          <a href="#" className="text-foreground">
+            Terms of use
+          </a>{" "}
+          &{" "}
+          <a href="#" className="text-foreground">
+            Privacy Policy
+          </a>
+          .
         </div>
       </div>
     </div>
