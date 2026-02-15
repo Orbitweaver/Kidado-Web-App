@@ -189,6 +189,10 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
