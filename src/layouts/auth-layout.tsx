@@ -5,21 +5,23 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="grid min-h-svh lg:grid-cols-2 p-8">
       <div className="bg-muted relative hidden lg:block">
         <div
-          className={`flex flex-col items-center justify-around bg-[url('/images/auth-bg.png')] h-full w-full rounded-lg bg-no-repeat bg-cover text-white text-center`}
+          className={`px-4 flex flex-col items-center justify-around bg-[url('/images/auth-bg.png')] h-full w-full rounded-lg bg-no-repeat bg-cover text-white text-center`}
         >
           <div>
-            <h1 className="text-[40px] font-bold">Welcome to Kidado</h1>
-            <p className="mt-1 text-[22px] font-medium">
+            <h1 className="text-3xl lg:text-4xl xl:text-[40px] font-bold">
+              Welcome to Kidado
+            </h1>
+            <p className="mt-1 text-lg lg:text-xl xl:text-[22px] font-medium">
               Global Academic Network for Educators & Learners
             </p>
           </div>
 
           <div className="flex flex-col items-center justify-center gap-3">
             <div>
-              <h2 className="text-[34px] font-bold">
+              <h2 className="text-2xl lg:text-3xl xl:text-[34px] font-bold">
                 Share Knowledge. Find Mentors.
               </h2>
-              <p className="mt-2 text-[22px] font-normal w-lg">
+              <p className="mt-2 text-lg lg:text-xl xl:text-[22px] font-normal max-w-lg mx-auto">
                 Showcase research, projects, and expertise find right guidance
                 and collaboration opportunities.
               </p>
