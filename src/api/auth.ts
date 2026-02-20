@@ -2,12 +2,15 @@ import instance from "@/config/api.config";
 import type { LoginValues, RegisterValues } from "@/config/types";
 
 export const googleLogin = async (token: string) => {
-  const { data } = await instance.post("/auth/google/", { token });
+  const { data } = await instance.post("/auth/google", { id_token: token });
   return data;
 };
 
 export const register = async (data: RegisterValues) => {
-  const response = await instance.post("/auth/signup", data);
+  const response = await instance.post("/auth/signup", {
+    ...data,
+    password_confirm: data.password,
+  });
   return response.data;
 };
 

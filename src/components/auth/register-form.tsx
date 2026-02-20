@@ -25,6 +25,7 @@ const RegisterForm = ({
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -46,7 +47,11 @@ const RegisterForm = ({
 
   const onSubmit = async (data: RegisterValues) => {
     console.log("Register data:", data);
-    await registerUser(data);
+    await registerUser(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
   };
 
   return (
