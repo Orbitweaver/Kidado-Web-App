@@ -11,36 +11,11 @@ import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Check } from "lucide-react";
-import { useNavigate } from "react-router";
 import GoogleAuthBtn from "./google-auth-btn";
-
-const registerSchema = z
-  .object({
-    email: z.string().email({ message: "Invalid email address" }),
-    password: z
-      .string()
-      .min(8, { message: "Must be at least 8 characters long" }),
-  })
-  .superRefine(({ password, email }, ctx) => {
-    if (!/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Password must contain a number or symbol",
-        path: ["password"],
-      });
-    }
-    if (email && password.includes(email.split("@")[0])) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Password cannot contain your email address",
-        path: ["password"],
-      });
-    }
-  });
-
-type RegisterValues = z.infer<typeof registerSchema>;
+import { registerSchema } from "@/config/schema";
+import type { RegisterValues } from "@/config/types";
+import { useRegister } from "@/hooks/auth/useRegister";
 
 const RegisterForm = ({
   className,
@@ -55,7 +30,7 @@ const RegisterForm = ({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
   });
-  const navigate = useNavigate();
+  const { mutateAsync: registerUser, isPending } = useRegister();
 
   const email = watch("email");
   const password = watch("password") || "";
@@ -69,10 +44,9 @@ const RegisterForm = ({
   const isPasswordWeak =
     !hasMinLength || !hasNumberOrSymbol || !notContainsEmail;
 
-  const onSubmit = (data: RegisterValues) => {
+  const onSubmit = async (data: RegisterValues) => {
     console.log("Register data:", data);
-    navigate("/otp");
-    // TODO: integrate with auth store/api
+    await registerUser(data);
   };
 
   return (
@@ -185,13 +159,13 @@ const RegisterForm = ({
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field> */}
         <Field>
-          <Button type="submit" className="cursor-pointer">
+          <Button type="submit" className="cursor-pointer" disabled={isPending}>
             Create Account
           </Button>
         </Field>
         <FieldSeparator>Or</FieldSeparator>
         <Field>
-          <GoogleAuthBtn />
+          <GoogleAuthBtn disabled={isPending} />
         </Field>
       </FieldGroup>
     </form>

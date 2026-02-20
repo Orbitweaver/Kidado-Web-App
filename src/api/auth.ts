@@ -1,13 +1,17 @@
-export const googleLogin = async (token: string) => {
-  const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/google`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    },
-  );
+import instance from "@/config/api.config";
+import type { LoginValues, RegisterValues } from "@/config/types";
 
-  if (!res.ok) throw new Error("Google login failed");
-  return res.json();
+export const googleLogin = async (token: string) => {
+  const { data } = await instance.post("/auth/google/", { token });
+  return data;
+};
+
+export const register = async (data: RegisterValues) => {
+  const response = await instance.post("/auth/signup", data);
+  return response.data;
+};
+
+export const login = async (data: LoginValues) => {
+  const response = await instance.post("/auth/login", data);
+  return response.data;
 };

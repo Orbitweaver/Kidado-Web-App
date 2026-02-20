@@ -8,18 +8,13 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import GoogleAuthBtn from "./google-auth-btn";
-
-const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(1, { message: "Password is required" }),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
+import type { LoginValues } from "@/config/types";
+import { loginSchema } from "@/config/schema";
+import { useLogin } from "@/hooks/auth/useLogin";
 
 export function LoginForm({
   className,
@@ -33,12 +28,11 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
-  const navigate = useNavigate();
+  const { mutateAsync: loginUser, isPending } = useLogin();
 
-  const onSubmit = (data: LoginValues) => {
+  const onSubmit = async (data: LoginValues) => {
     console.log("Login data:", data);
-    // TODO: integrate with auth store/api
-    navigate("/");
+    await loginUser(data);
   };
 
   return (
@@ -81,13 +75,13 @@ export function LoginForm({
           <FieldError errors={[errors.password]} />
         </Field>
         <Field>
-          <Button type="submit" className="cursor-pointer">
+          <Button type="submit" className="cursor-pointer" disabled={isPending}>
             Login
           </Button>
         </Field>
         <FieldSeparator>Or</FieldSeparator>
         <Field>
-          <GoogleAuthBtn />
+          <GoogleAuthBtn disabled={isPending} />
         </Field>
       </FieldGroup>
     </form>

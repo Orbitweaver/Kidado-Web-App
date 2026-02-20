@@ -2,7 +2,7 @@ import { useGoogleAuth } from "@/hooks/auth/useGoogleAuth";
 import { Button } from "../ui/button";
 import { useGoogleLogin } from "@react-oauth/google";
 
-const GoogleAuthBtn = () => {
+const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
   const { mutate: loginWithGoogle, isPending } = useGoogleAuth();
 
   const handleGoogleLogin = useGoogleLogin({
@@ -18,7 +18,7 @@ const GoogleAuthBtn = () => {
       type="button"
       className="cursor-pointer"
       onClick={() => handleGoogleLogin()}
-      disabled={isPending}
+      disabled={disabled || isPending}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
