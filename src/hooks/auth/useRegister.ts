@@ -1,5 +1,7 @@
 import { register } from "@/api/auth";
+import type { ApiError } from "@/config/types";
 import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -8,21 +10,16 @@ export const useRegister = () => {
 
   return useMutation({
     mutationFn: register,
-    onSuccess: (data) => {
-      navigate("/otp");
-      localStorage.setItem("token", data.access_token);
-      toast.success(
-        "Registration successful! Please check your email for the OTP.",
-      );
-      // redirect user, update auth context, etc.
+    onSuccess: () => {
+      toast.success("Registration successful! Please login to continue.");
+      navigate("/login");
     },
-    onError: (error) => {
+    onError: (error: AxiosError<ApiError>) => {
       console.error("Register failed:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Registration failed. Please try again.",
-      );
+      const errorMessage =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
+      toast.error(errorMessage);
     },
   });
 };

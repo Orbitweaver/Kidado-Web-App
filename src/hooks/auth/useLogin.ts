@@ -1,6 +1,8 @@
 import { login } from "@/api/auth";
+import type { ApiError, LoginResponse } from "@/config/types";
 import useUserStore from "@/store/user-store";
 import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -10,18 +12,17 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: login,
-    onSuccess: (data) => {
+    onSuccess: (data: LoginResponse) => {
       setUser(data.access_token, data.refresh_token, data.user);
       navigate("/");
-      toast.success("Login successful!");
+      toast.success("Welcome back! Login successful.");
     },
-    onError: (error) => {
+    onError: (error: AxiosError<ApiError>) => {
       console.error("Login failed:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please try again.",
-      );
+      const errorMessage =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials.";
+      toast.error(errorMessage);
     },
   });
 };

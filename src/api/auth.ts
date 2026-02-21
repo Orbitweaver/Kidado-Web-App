@@ -1,12 +1,22 @@
 import instance from "@/config/api.config";
-import type { LoginValues, RegisterValues } from "@/config/types";
+import type {
+  GoogleAuthResponse,
+  LoginResponse,
+  LoginValues,
+  RegisterResponse,
+  RegisterValues,
+} from "@/config/types";
 
-export const googleLogin = async (token: string) => {
+export const googleLogin = async (
+  token: string,
+): Promise<GoogleAuthResponse> => {
   const { data } = await instance.post("/auth/google", { id_token: token });
   return data;
 };
 
-export const register = async (data: RegisterValues) => {
+export const register = async (
+  data: RegisterValues,
+): Promise<RegisterResponse> => {
   const response = await instance.post("/auth/signup", {
     ...data,
     password_confirm: data.password,
@@ -14,7 +24,7 @@ export const register = async (data: RegisterValues) => {
   return response.data;
 };
 
-export const login = async (data: LoginValues) => {
+export const login = async (data: LoginValues): Promise<LoginResponse> => {
   const response = await instance.post("/auth/login", data);
   return response.data;
 };

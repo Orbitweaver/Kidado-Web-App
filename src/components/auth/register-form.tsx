@@ -109,7 +109,7 @@ const RegisterForm = ({
                 className={cn(
                   "flex items-center gap-2 text-sm",
                   notContainsEmail && password.length > 0
-                    ? "text-blue-600"
+                    ? "text-primary"
                     : "text-muted-foreground",
                 )}
               >
@@ -117,7 +117,7 @@ const RegisterForm = ({
                   className={cn(
                     "h-4 w-4",
                     notContainsEmail && password.length > 0
-                      ? "text-blue-600"
+                      ? "text-primary"
                       : "text-muted-foreground/40",
                   )}
                 />
@@ -126,13 +126,13 @@ const RegisterForm = ({
               <div
                 className={cn(
                   "flex items-center gap-2 text-sm",
-                  hasMinLength ? "text-blue-600" : "text-muted-foreground",
+                  hasMinLength ? "text-primary" : "text-muted-foreground",
                 )}
               >
                 <Check
                   className={cn(
                     "h-4 w-4",
-                    hasMinLength ? "text-blue-600" : "text-muted-foreground/40",
+                    hasMinLength ? "text-primary" : "text-muted-foreground/40",
                   )}
                 />
                 At least 8 characters
@@ -140,14 +140,14 @@ const RegisterForm = ({
               <div
                 className={cn(
                   "flex items-center gap-2 text-sm",
-                  hasNumberOrSymbol ? "text-blue-600" : "text-muted-foreground",
+                  hasNumberOrSymbol ? "text-primary" : "text-muted-foreground",
                 )}
               >
                 <Check
                   className={cn(
                     "h-4 w-4",
                     hasNumberOrSymbol
-                      ? "text-blue-600"
+                      ? "text-primary"
                       : "text-muted-foreground/40",
                   )}
                 />
