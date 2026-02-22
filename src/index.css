@@ -187,6 +187,7 @@
 body {
   letter-spacing: var(--tracking-normal);
   font-family: "Inter", sans-serif;
+  overflow-y: hidden;
 }
 
 button {

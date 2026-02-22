@@ -13,8 +13,14 @@ export const useLogin = () => {
     mutationFn: login,
     onSuccess: (data: LoginResponse) => {
       setUser(data.access_token, data.refresh_token, data.user);
+      toast.success(data.message || "Login successful");
+
+      if (!data.user.profile.name) {
+        navigate("/profile/setup");
+        return;
+      }
+
       navigate("/");
-      toast.success("Welcome back! Login successful.");
     },
   });
 };

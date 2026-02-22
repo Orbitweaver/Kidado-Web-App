@@ -1,5 +1,6 @@
 import type z from "zod";
 import type { loginSchema, registerSchema } from "./schema";
+import type { Role } from "./enums";
 
 export interface ApiResponse<T> {
   message: string;
@@ -25,22 +26,25 @@ type AuthProvider = "EMAIL" | "GOOGLE";
 
 export type User = {
   id: string;
-  name: string | null;
   email: string;
-  bio: string | null;
-  mobile_country_code: string | null;
-  mobile_number: string | null;
-  role: string;
-  institution: string | null;
-  country: string | null;
-  city: string | null;
+  role: Role;
   auth_provider: AuthProvider;
   google_id: string | null;
   is_active: boolean;
   is_email_verified: boolean;
   date_joined: string;
-  created_at: string;
-  updated_at: string;
+  profile: {
+    id: string;
+    name: string | null;
+    bio: string | null;
+    mobile_country_code: string | null;
+    mobile_number: string | null;
+    institution: string | null;
+    country: string | null;
+    city: string | null;
+    created_at: string;
+    updated_at: string;
+  };
 };
 
 export interface RegisterResponse {
@@ -67,7 +71,10 @@ export interface RegisterResponse {
   };
 }
 
-export interface LoginResponse extends AuthTokens {
+export interface LoginResponse {
+  message: string;
+  access_token: string;
+  refresh_token: string;
   user: User;
 }
 

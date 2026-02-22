@@ -26,5 +26,5 @@ export const register = async (
 
 export const login = async (data: LoginValues): Promise<LoginResponse> => {
   const response = await instance.post("/auth/login", data);
-  return response.data;
+  return response.data.data;
 };
