@@ -6,10 +6,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export type DrfError = {
+  detail?: string;
+  non_field_errors?: string[];
+} & Record<string, string[] | string | undefined>;
+
 export interface ApiError {
   message: string;
   errors?: Record<string, string[]>;
-  code?: string;
 }
 
 export interface AuthTokens {

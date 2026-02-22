@@ -15,6 +15,9 @@ import GoogleAuthBtn from "./google-auth-btn";
 import type { LoginValues } from "@/config/types";
 import { loginSchema } from "@/config/schema";
 import { useLogin } from "@/hooks/auth/useLogin";
+import { normalizeDrfError } from "@/lib/normalizeErrors";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 export function LoginForm({
   className,
@@ -23,16 +26,35 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
+
   const { mutateAsync: loginUser, isPending } = useLogin();
 
   const onSubmit = async (data: LoginValues) => {
-    console.log("Login data:", data);
-    await loginUser(data);
+    clearErrors();
+
+    try {
+      await loginUser(data);
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const apiError = normalizeDrfError(
+          error.response?.data || { message: "An unexpected error occurred." },
+        );
+
+        const fieldErrors = Object.entries(apiError.errors || {});
+        fieldErrors.forEach(([field, messages]) => {
+          setError(field as keyof LoginValues, { message: messages.join(" ") });
+        });
+
+        toast.error(apiError.message);
+      }
+    }
   };
 
   return (
