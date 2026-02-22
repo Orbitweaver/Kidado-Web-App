@@ -15,8 +15,8 @@ const App = () => {
       <>
         <Toaster position="bottom-right" />
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/sign-in" element={<LoginPage />} />
+          <Route path="/sign-up" element={<RegisterPage />} />
           <Route path="/otp" element={<OTPPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
 

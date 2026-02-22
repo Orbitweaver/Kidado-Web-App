@@ -9,13 +9,16 @@ import {
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check } from "lucide-react";
 import GoogleAuthBtn from "./google-auth-btn";
 import { registerSchema } from "@/config/schema";
 import type { RegisterValues } from "@/config/types";
 import { useRegister } from "@/hooks/auth/useRegister";
+import { isAxiosError } from "axios";
+import { normalizeDrfError } from "@/lib/normalizeErrors";
+import { toast } from "sonner";
 
 const RegisterForm = ({
   className,
@@ -24,8 +27,10 @@ const RegisterForm = ({
   const {
     register,
     handleSubmit,
-    watch,
     reset,
+    control,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -33,8 +38,8 @@ const RegisterForm = ({
   });
   const { mutateAsync: registerUser, isPending } = useRegister();
 
-  const email = watch("email");
-  const password = watch("password") || "";
+  const email = useWatch({ control, name: "email" });
+  const password = useWatch({ control, name: "password" }) || "";
 
   const hasMinLength = password.length >= 8;
   const hasNumberOrSymbol = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
@@ -46,12 +51,26 @@ const RegisterForm = ({
     !hasMinLength || !hasNumberOrSymbol || !notContainsEmail;
 
   const onSubmit = async (data: RegisterValues) => {
-    console.log("Register data:", data);
-    await registerUser(data, {
-      onSuccess: () => {
-        reset();
-      },
-    });
+    clearErrors();
+    try {
+      await registerUser(data);
+      reset();
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const apiError = normalizeDrfError(
+          error.response?.data || { message: "An unexpected error occurred." },
+        );
+
+        const fieldErrors = Object.entries(apiError.errors || {});
+        fieldErrors.forEach(([field, messages]) => {
+          setError(field as keyof RegisterValues, {
+            message: messages.join(" "),
+          });
+        });
+
+        toast.error(apiError.message);
+      }
+    }
   };
 
   return (
