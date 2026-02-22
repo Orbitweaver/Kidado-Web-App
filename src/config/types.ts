@@ -58,16 +58,7 @@ export interface RegisterResponse {
     is_active: boolean;
     is_email_verified: boolean;
     date_joined: string;
-    profile: Omit<
-      User,
-      | "email"
-      | "role"
-      | "auth_provider"
-      | "google_id"
-      | "is_active"
-      | "is_email_verified"
-      | "date_joined"
-    >;
+    profile: User["profile"];
   };
 }
 
@@ -82,6 +73,23 @@ export interface GoogleAuthResponse {
   access_token: string;
   refresh_token: string;
   user?: User;
+}
+
+export interface IRoles {
+  value: Role;
+  label: string;
+}
+
+export interface IInstitutions {
+  id: string;
+  name: string;
+  country: string;
+  city: string;
+}
+
+export interface SelectorOptionResponse {
+  roles: IRoles[];
+  institutions: IInstitutions[];
 }
 
 export type RegisterValues = z.infer<typeof registerSchema>;

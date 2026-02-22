@@ -18,6 +18,8 @@ instance.interceptors.request.use((config) => {
   const store = JSON.parse(localStorage.getItem("user-storage") || "{}");
   const token = store?.state?.accessToken;
 
+  config.headers["ngrok-skip-browser-warning"] = "true";
+
   if (
     token &&
     !["/auth/login", "/auth/signup", "/auth/google"].includes(config?.url || "")

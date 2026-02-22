@@ -1,5 +1,5 @@
 import instance from "@/config/api.config";
-import type { ApiResponse, User } from "@/config/types";
+import type { ApiResponse, SelectorOptionResponse, User } from "@/config/types";
 
 export interface UpdateProfileData {
   name?: string;
@@ -25,7 +25,7 @@ export const updateProfile = async (
   return response.data;
 };
 
-export const getSelectorValues = async () => {
-  const response = await instance.get("/users/lookup");
-  return response.data;
+export const getSelectorValues = async (): Promise<SelectorOptionResponse> => {
+  const response = await instance.get("/users/lookup/");
+  return response.data.data;
 };
