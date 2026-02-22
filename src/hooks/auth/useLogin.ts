@@ -12,7 +12,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data: LoginResponse) => {
-      setUser(data.access_token, data.refresh_token, data.user);
+      setUser(data.access, data.refresh, data.user);
       toast.success(data.message || "Login successful");
 
       if (!data.user.profile.name) {

@@ -73,8 +73,8 @@ export interface RegisterResponse {
 
 export interface LoginResponse {
   message: string;
-  access_token: string;
-  refresh_token: string;
+  access: string;
+  refresh: string;
   user: User;
 }
 
