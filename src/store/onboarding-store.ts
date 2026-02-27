@@ -5,7 +5,9 @@ export interface OnboardingData {
   fullName: string;
   role: string;
   school: string;
-  location: string;
+  schoolName: string;
+  city: string;
+  country: string;
   interests: string[];
   bio: string;
   profileImage: string | null; // Storing as base64 or URL for simplicity in this demo, real app might upload immediately
@@ -27,7 +29,9 @@ const INITIAL_DATA: OnboardingData = {
   fullName: "",
   role: "",
   school: "",
-  location: "",
+  schoolName: "",
+  city: "",
+  country: "",
   interests: [],
   bio: "",
   profileImage: null,
@@ -63,7 +67,9 @@ export const useOnboardingStore = create<OnboardingState>()(
         fullName: state.fullName,
         role: state.role,
         school: state.school,
-        location: state.location,
+        schoolName: state.schoolName,
+        city: state.city,
+        country: state.country,
         interests: state.interests,
         bio: state.bio,
         currentStep: state.currentStep,

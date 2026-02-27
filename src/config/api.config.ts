@@ -52,9 +52,9 @@ instance.interceptors.response.use(
           const store = JSON.parse(
             localStorage.getItem("user-storage") || "{}",
           );
-          store.state.accessToken = refreshedToken.accessToken;
+          store.state.accessToken = refreshedToken.access;
           localStorage.setItem("user-storage", JSON.stringify(store));
-          originalRequest.headers.Authorization = `Bearer ${refreshedToken.accessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${refreshedToken.access}`;
           return instance(originalRequest);
         } catch (refreshError) {
           localStorage.removeItem("user-storage");

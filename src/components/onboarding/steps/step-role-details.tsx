@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useMemo } from "react";
 import { useOnboardingStore } from "@/store/onboarding-store";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -31,20 +31,59 @@ import useGetSelectOptions from "@/hooks/useGetSelectOptions";
 const formSchema = z.object({
   role: z.string().min(1, "Role is required"),
   school: z.string().min(1, "School/University is required"),
-  location: z.string().min(1, "Location is required"),
+  schoolName: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  country: z.string().optional(),
 });
 
 export function StepRoleDetails() {
-  const { role, school, location, updateData, nextStep } = useOnboardingStore();
+  const { role, school, schoolName, city, country, updateData, nextStep } =
+    useOnboardingStore();
 
   const { data: selectOptions, isLoading } = useGetSelectOptions();
+  const [cityQuery, setCityQuery] = useState("");
+
+  const allCities = useMemo(() => {
+    if (!selectOptions?.countries) return [];
+    return selectOptions.countries.flatMap((country) =>
+      country.cities.map((city) => ({
+        city: city,
+        country: country.name,
+      })),
+    );
+  }, [selectOptions?.countries]);
+
+  const filteredCities = useMemo(() => {
+    if (!cityQuery) return [];
+    const lowerQuery = cityQuery.toLowerCase();
+    return allCities
+      .filter((c) => c.city.toLowerCase().includes(lowerQuery))
+      .slice(0, 50);
+  }, [allCities, cityQuery]);
+
+  const [schoolQuery, setSchoolQuery] = useState(schoolName || "");
+
+  const filteredSchools = useMemo(() => {
+    if (!selectOptions?.institutions) return [];
+    if (!schoolQuery) return selectOptions.institutions.slice(0, 50);
+    const lowerQuery = schoolQuery.toLowerCase();
+    return selectOptions.institutions
+      .filter(
+        (s) =>
+          s.name.toLowerCase().includes(lowerQuery) ||
+          s.city.toLowerCase().includes(lowerQuery),
+      )
+      .slice(0, 50);
+  }, [selectOptions?.institutions, schoolQuery]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       role: role || "",
       school: school || "",
-      location: location || "",
+      schoolName: schoolName || "",
+      city: city || "",
+      country: country || "",
     },
   });
 
@@ -113,16 +152,36 @@ export function StepRoleDetails() {
                   value={field.value}
                   onValueChange={(val) => {
                     field.onChange(val);
+                    const selectedSchool = selectOptions?.institutions?.find(
+                      (s) => s.id === val,
+                    );
+                    if (selectedSchool) {
+                      form.setValue("schoolName", selectedSchool.name);
+                    } else {
+                      form.setValue("schoolName", val || "");
+                    }
                   }}
+                  inputValue={schoolQuery}
+                  onInputValueChange={setSchoolQuery}
                 >
                   <ComboboxInput placeholder="Select or enter School" />
                   <ComboboxContent>
                     <ComboboxList>
-                      {selectOptions?.institutions?.map((school) => (
-                        <ComboboxItem key={school.id} value={school.id}>
-                          {school.name}, {school.city}, {school.country}
-                        </ComboboxItem>
-                      ))}
+                      {isLoading ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          Loading...
+                        </div>
+                      ) : filteredSchools.length > 0 ? (
+                        filteredSchools.map((school) => (
+                          <ComboboxItem key={school.id} value={school.id}>
+                            {school.name}, {school.city}, {school.country}
+                          </ComboboxItem>
+                        ))
+                      ) : (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          No schools found
+                        </div>
+                      )}
                     </ComboboxList>
                   </ComboboxContent>
                 </Combobox>
@@ -133,15 +192,50 @@ export function StepRoleDetails() {
 
           <FormField
             control={form.control}
-            name="location"
+            name="city"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Location <span className="text-red-500">*</span>
+                  City <span className="text-red-500">*</span>
                 </FormLabel>
-                <FormControl>
-                  <Input placeholder="Indore" {...field} />
-                </FormControl>
+                <Combobox
+                  value={field.value}
+                  onValueChange={(val) => {
+                    const value = val?.split(", ");
+                    field.onChange(value?.[0]);
+                    form.setValue("country", value?.[1]);
+                  }}
+                  inputValue={cityQuery}
+                  onInputValueChange={setCityQuery}
+                >
+                  <ComboboxInput placeholder="Search city..." />
+                  <ComboboxContent>
+                    <ComboboxList>
+                      {isLoading ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          Loading...
+                        </div>
+                      ) : filteredCities.length > 0 ? (
+                        filteredCities.map((c) => (
+                          <ComboboxItem
+                            key={`${c.city}-${c.country}`}
+                            value={`${c.city}, ${c.country}`}
+                          >
+                            {c.city}, {c.country}
+                          </ComboboxItem>
+                        ))
+                      ) : cityQuery.length > 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          No cities found
+                        </div>
+                      ) : (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          Type to search...
+                        </div>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
                 <FormMessage />
               </FormItem>
             )}

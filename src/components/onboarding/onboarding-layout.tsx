@@ -37,9 +37,11 @@ export function OnboardingLayout() {
     prevStep,
     fullName,
     school,
-    location,
+    city,
+    country,
     interests,
     reset,
+    role,
   } = useOnboardingStore();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile();
   const [prevStepState, setPrevStepState] = useState(currentStep);
@@ -74,8 +76,10 @@ export function OnboardingLayout() {
       updateProfile({
         name: fullName,
         institution: school,
-        city: location,
+        city: city,
+        country: country,
         interests: interests,
+        role: role,
       });
       reset();
     } catch (error) {

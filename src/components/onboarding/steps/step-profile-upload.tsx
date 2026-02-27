@@ -18,7 +18,9 @@ export function StepProfileUpload() {
     fullName,
     role,
     school,
-    location,
+    schoolName,
+    city,
+    country,
     interests,
     reset,
   } = useOnboardingStore();
@@ -40,9 +42,11 @@ export function StepProfileUpload() {
         name: fullName,
         bio: localBio,
         institution: school,
-        city: location,
+        city: city,
+        country: country,
         interests: interests,
         profile_image: profileImage || undefined,
+        role,
       });
       reset();
     } catch (error) {
@@ -75,7 +79,7 @@ export function StepProfileUpload() {
             {fullName} | {role}
           </div>
           <div>
-            {school} . {location}
+            {schoolName || school} . {city}, {country}
           </div>
         </div>
       </div>

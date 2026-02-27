@@ -87,9 +87,15 @@ export interface IInstitutions {
   city: string;
 }
 
+export interface ICountries {
+  name: string;
+  cities: string[];
+}
+
 export interface SelectorOptionResponse {
   roles: IRoles[];
   institutions: IInstitutions[];
+  countries: ICountries[];
 }
 
 export type RegisterValues = z.infer<typeof registerSchema>;

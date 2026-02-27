@@ -11,6 +11,7 @@ export interface UpdateProfileData {
   city?: string;
   interests?: string[];
   profile_image?: string;
+  role?: string;
 }
 
 export type UpdateProfileResponse = ApiResponse<User>;
@@ -26,6 +27,6 @@ export const updateProfile = async (
 };
 
 export const getSelectorValues = async (): Promise<SelectorOptionResponse> => {
-  const response = await instance.get("/users/lookup/");
+  const response = await instance.get("/users/lookup");
   return response.data.data;
 };
