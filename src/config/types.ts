@@ -39,7 +39,7 @@ export type User = {
     bio: string | null;
     mobile_country_code: string | null;
     mobile_number: string | null;
-    institution: string | null;
+    institution: IInstitutions | null;
     country: string | null;
     city: string | null;
     created_at: string;
@@ -85,6 +85,8 @@ export interface IInstitutions {
   name: string;
   country: string;
   city: string;
+  verified: boolean;
+  website: string | null;
 }
 
 export interface ICountries {
