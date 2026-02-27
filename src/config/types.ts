@@ -70,9 +70,10 @@ export interface LoginResponse {
 }
 
 export interface GoogleAuthResponse {
-  access_token: string;
-  refresh_token: string;
-  user?: User;
+  message: string;
+  access: string;
+  refresh: string;
+  user: User;
 }
 
 export interface IRoles {

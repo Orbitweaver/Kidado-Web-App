@@ -10,8 +10,8 @@ import type {
 export const googleLogin = async (
   token: string,
 ): Promise<GoogleAuthResponse> => {
-  const { data } = await instance.post("/auth/google", { id_token: token });
-  return data;
+  const response = await instance.post("/auth/google", { id_token: token });
+  return response.data.data;
 };
 
 export const register = async (
