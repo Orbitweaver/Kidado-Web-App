@@ -149,16 +149,19 @@ export function StepRoleDetails() {
                   School/University <span className="text-red-500">*</span>
                 </FormLabel>
                 <Combobox
-                  value={field.value}
+                  value={form.watch("schoolName")}
                   onValueChange={(val) => {
-                    field.onChange(val);
                     const selectedSchool = selectOptions?.institutions?.find(
-                      (s) => s.id === val,
+                      (s) => s.name === val,
                     );
                     if (selectedSchool) {
+                      field.onChange(selectedSchool.id);
                       form.setValue("schoolName", selectedSchool.name);
+                      setSchoolQuery(selectedSchool.name);
                     } else {
+                      field.onChange(val || "");
                       form.setValue("schoolName", val || "");
+                      setSchoolQuery(val || "");
                     }
                   }}
                   inputValue={schoolQuery}
@@ -173,7 +176,7 @@ export function StepRoleDetails() {
                         </div>
                       ) : filteredSchools.length > 0 ? (
                         filteredSchools.map((school) => (
-                          <ComboboxItem key={school.id} value={school.id}>
+                          <ComboboxItem key={school.id} value={school.name}>
                             {school.name}, {school.city}, {school.country}
                           </ComboboxItem>
                         ))
