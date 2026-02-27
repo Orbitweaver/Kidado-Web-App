@@ -71,9 +71,9 @@ export function OnboardingLayout() {
 
   const showBackButton = currentStep > 1 && currentStep < 5;
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     try {
-      updateProfile({
+      await updateProfile({
         name: fullName,
         institution: school,
         city: city,
