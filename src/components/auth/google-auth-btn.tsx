@@ -1,4 +1,5 @@
 import { useGoogleAuth } from "@/hooks/auth/useGoogleAuth";
+import { cn } from "@/lib/utils";
 import { GoogleLogin } from "@react-oauth/google";
 
 const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
@@ -6,9 +7,10 @@ const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
 
   return (
     <div
-      className={
-        disabled || isPending ? "w-full pointer-events-none opacity-50" : ""
-      }
+      className={cn(
+        "w-full",
+        (disabled || isPending) && " pointer-events-none opacity-50",
+      )}
     >
       <GoogleLogin
         onSuccess={(credentialResponse) => {
