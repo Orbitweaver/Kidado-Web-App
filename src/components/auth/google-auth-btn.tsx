@@ -6,7 +6,9 @@ const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
 
   return (
     <div
-      className={disabled || isPending ? "pointer-events-none opacity-50" : ""}
+      className={
+        disabled || isPending ? "w-full pointer-events-none opacity-50" : ""
+      }
     >
       <GoogleLogin
         onSuccess={(credentialResponse) => {
