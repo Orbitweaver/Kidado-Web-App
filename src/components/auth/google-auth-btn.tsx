@@ -2,6 +2,7 @@ import { useGoogleAuth } from "@/hooks/auth/useGoogleAuth";
 import { cn } from "@/lib/utils";
 import { GoogleLogin } from "@react-oauth/google";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
   const { mutate: loginWithGoogle, isPending } = useGoogleAuth();
@@ -24,9 +25,13 @@ const GoogleAuthBtn = ({ disabled = false }: { disabled?: boolean }) => {
     >
       <GoogleLogin
         onSuccess={(credentialResponse) => {
-          loginWithGoogle(credentialResponse.credential!);
+          if (!credentialResponse.credential) {
+            toast.error("Google login failed. Please try again.");
+            return;
+          }
+          loginWithGoogle(credentialResponse.credential);
         }}
-        onError={() => console.error("Google Login Failed")}
+        onError={() => toast.error("Google login failed. Please try again.")}
         useOneTap={false}
         text="signin_with"
         logo_alignment="center"

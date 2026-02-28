@@ -15,7 +15,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <>
-        <Toaster position="bottom-right" />
+        <Toaster position="bottom-right" theme="light" richColors />
         <Routes>
           <Route path="/sign-in" element={<LoginPage />} />
           <Route path="/sign-up" element={<RegisterPage />} />
